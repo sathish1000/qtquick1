@@ -82,7 +82,7 @@ static QRectF resizeRect(const QRectF &newRect, const QRectF &oldRect)
 static QPolygonF regionToPolygon(const QRegion &region)
 {
     QPainterPath path;
-    for (const QRect &rect : region)
+    foreach (const QRect &rect, region.rects())
         path.addRect(rect);
     return path.toFillPolygon();
 }

@@ -341,7 +341,10 @@ void QDeclarativePaintedItem::paint(QPainter *p, const QStyleOptionGraphicsItem 
                 uncached += d->imagecache[oldest]->area;
                 delete d->imagecache.takeAt(oldest);
             }
-            for (const QRect &r : QRegion(biggerrect) & uncached) {
+            const QRegion bigger = QRegion(biggerrect) & uncached;
+            const QVector<QRect> rects = bigger.rects();
+            for (int i = 0; i < rects.count(); ++i) {
+                const QRect &r = rects.at(i);
                 QPixmap img(r.size());
                 if (d->fillColor.isValid())
                     img.fill(d->fillColor);
@@ -371,8 +374,9 @@ void QDeclarativePaintedItem::paint(QPainter *p, const QStyleOptionGraphicsItem 
                 p->drawPixmap(r, newitem->image);
             }
         } else {
-            for (const QRect &r : uncached)
-                p->fillRect(r, Qt::lightGray);
+            const QVector<QRect> rects = uncached.rects();
+            for (int i = 0; i < rects.count(); ++i)
+                p->fillRect(rects.at(i), Qt::lightGray);
         }
     }
 
